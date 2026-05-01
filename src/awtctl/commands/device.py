@@ -5,7 +5,7 @@ import click
 @click.argument("state", type=click.Choice(["on", "off"]))
 @click.pass_context
 def power(ctx: click.Context, state: str) -> None:
-    ctx.obj["client"].post("power", {"power": state == "on"})
+    ctx.obj["sdk"].set_power(state == "on")
     print("Done.")
 
 
@@ -13,14 +13,14 @@ def power(ctx: click.Context, state: str) -> None:
 @click.argument("seconds", type=int)
 @click.pass_context
 def sleep(ctx: click.Context, seconds: int) -> None:
-    ctx.obj["client"].post("sleep", {"sleep": seconds})
+    ctx.obj["sdk"].sleep(seconds)
     print("Sleeping.")
 
 
 @click.command(help="Trigger a firmware update.")
 @click.pass_context
 def update(ctx: click.Context) -> None:
-    ctx.obj["client"].post("doupdate", {})
+    ctx.obj["sdk"].update_firmware()
     print("Update triggered.")
 
 
@@ -28,5 +28,5 @@ def update(ctx: click.Context) -> None:
 @click.confirmation_option(prompt="Reboot the device?")
 @click.pass_context
 def reboot(ctx: click.Context) -> None:
-    ctx.obj["client"].post("reboot", {})
+    ctx.obj["sdk"].reboot()
     print("Rebooting.")

@@ -11,24 +11,23 @@ def config() -> None:
 @config.command(name="get", help="Print current configuration.")
 @click.pass_context
 def config_get(ctx: click.Context) -> None:
-    data = ctx.obj["client"].get("settings")
-    print(json.dumps(data, indent=2))
+    print(json.dumps(ctx.obj["sdk"].get_settings(), indent=2))
 
 
-@config.command(name="set", help="Update one or more settings. Values are parsed as JSON (e.g. BRI=128 UPPERCASE=false TCOL='[255,0,0]').")
+@config.command(name="set", help="Update one or more settings. Values are parsed as JSON (e.g. BRI=128 UPPERCASE=false TCOL='#FF8000').")
 @click.argument("pairs", nargs=-1, required=True)
 @click.pass_context
 def config_set(ctx: click.Context, pairs: tuple[str, ...]) -> None:
-    payload: dict = {}
+    kwargs: dict = {}
     for pair in pairs:
         if "=" not in pair:
             raise click.BadParameter(f"Expected KEY=VALUE, got: {pair}")
         key, _, raw = pair.partition("=")
         try:
-            payload[key] = json.loads(raw)
+            kwargs[key] = json.loads(raw)
         except json.JSONDecodeError:
-            payload[key] = raw
-    ctx.obj["client"].post("settings", payload)
+            kwargs[key] = raw
+    ctx.obj["sdk"].update_settings(**kwargs)
     print("Done.")
 
 
@@ -36,5 +35,5 @@ def config_set(ctx: click.Context, pairs: tuple[str, ...]) -> None:
 @click.confirmation_option(prompt="This will reset all settings. Continue?")
 @click.pass_context
 def config_reset(ctx: click.Context) -> None:
-    ctx.obj["client"].post("resetSettings", {})
+    ctx.obj["sdk"].reset_settings()
     print("Reset.")

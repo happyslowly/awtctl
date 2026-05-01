@@ -17,7 +17,7 @@ def create(ctx: click.Context, name: str, file: Path) -> None:
         payload = yaml.safe_load(content)
     else:
         payload = json.loads(content)
-    ctx.obj["client"].post(f"custom?name={name}", payload)
+    ctx.obj["sdk"].create_app_raw(name, payload)
     print("Done.")
 
 
@@ -25,16 +25,16 @@ def create(ctx: click.Context, name: str, file: Path) -> None:
 @click.argument("name")
 @click.pass_context
 def switch(ctx: click.Context, name: str) -> None:
-    ctx.obj["client"].post("switch", {"name": name})
+    ctx.obj["sdk"].switch_app(name)
 
 
 @click.command(help=f"Go to the next app. Built-in apps: {', '.join(BUILTIN_APPS)}.")
 @click.pass_context
 def next(ctx: click.Context) -> None:
-    ctx.obj["client"].post("nextapp", {})
+    ctx.obj["sdk"].next_app()
 
 
 @click.command(help="Go to the previous app.")
 @click.pass_context
 def prev(ctx: click.Context) -> None:
-    ctx.obj["client"].post("previousapp", {})
+    ctx.obj["sdk"].prev_app()

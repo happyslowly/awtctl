@@ -6,7 +6,7 @@ import click
 @click.command(name="dismiss", help="Dismiss the current held notification.")
 @click.pass_context
 def dismiss(ctx: click.Context) -> None:
-    ctx.obj["client"].post("notify/dismiss", {})
+    ctx.obj["sdk"].dismiss_notification()
     print("Dismissed.")
 
 
@@ -85,78 +85,41 @@ def send(
     effect_settings: str | None,
     overlay: str | None,
 ) -> None:
-    payload: dict = {}
-
-    if text is not None:
-        payload["text"] = text
-    if text_case is not None:
-        payload["textCase"] = text_case
-    if top_text:
-        payload["topText"] = True
-    if text_offset is not None:
-        payload["textOffset"] = text_offset
-    if no_center:
-        payload["center"] = False
-    if color:
-        payload["color"] = color
-    if gradient:
-        payload["gradient"] = json.loads(gradient)
-    if blink_text is not None:
-        payload["blinkText"] = blink_text
-    if fade_text is not None:
-        payload["fadeText"] = fade_text
-    if background:
-        payload["background"] = background
-    if rainbow:
-        payload["rainbow"] = True
-    if icon:
-        payload["icon"] = icon
-    if push_icon is not None:
-        payload["pushIcon"] = push_icon
-    if repeat is not None:
-        payload["repeat"] = repeat
-    if duration is not None:
-        payload["duration"] = duration
-    if hold:
-        payload["hold"] = True
-    if sound:
-        payload["sound"] = sound
-    if rtttl:
-        payload["rtttl"] = rtttl
-    if loop_sound:
-        payload["loopSound"] = True
-    if bar:
-        payload["bar"] = json.loads(bar)
-    if line:
-        payload["line"] = json.loads(line)
-    if no_autoscale:
-        payload["autoscale"] = False
-    if bar_bc:
-        payload["barBC"] = bar_bc
-    if progress is not None:
-        payload["progress"] = progress
-    if progress_c:
-        payload["progressC"] = progress_c
-    if progress_bc:
-        payload["progressBC"] = progress_bc
-    if draw:
-        payload["draw"] = json.loads(draw)
-    if no_stack:
-        payload["stack"] = False
-    if wakeup:
-        payload["wakeup"] = True
-    if no_scroll:
-        payload["noScroll"] = True
-    if clients:
-        payload["clients"] = json.loads(clients)
-    if scroll_speed is not None:
-        payload["scrollSpeed"] = scroll_speed
-    if effect:
-        payload["effect"] = effect
-    if effect_settings:
-        payload["effectSettings"] = json.loads(effect_settings)
-    if overlay:
-        payload["overlay"] = overlay
-
-    ctx.obj["client"].post("notify", payload)
+    ctx.obj["sdk"].notify(
+        text,
+        text_case=text_case,
+        top_text=top_text,
+        text_offset=text_offset,
+        center=not no_center,
+        color=color,
+        gradient=json.loads(gradient) if gradient else None,
+        blink_text=blink_text,
+        fade_text=fade_text,
+        background=background,
+        rainbow=rainbow,
+        icon=icon,
+        push_icon=push_icon,
+        repeat=repeat,
+        duration=duration,
+        hold=hold,
+        sound=sound,
+        rtttl=rtttl,
+        loop_sound=loop_sound,
+        bar=json.loads(bar) if bar else None,
+        line=json.loads(line) if line else None,
+        autoscale=not no_autoscale,
+        bar_bc=bar_bc,
+        progress=progress,
+        progress_c=progress_c,
+        progress_bc=progress_bc,
+        draw=json.loads(draw) if draw else None,
+        stack=not no_stack,
+        wakeup=wakeup,
+        scroll=not no_scroll,
+        clients=json.loads(clients) if clients else None,
+        scroll_speed=scroll_speed,
+        effect=effect,
+        effect_settings=json.loads(effect_settings) if effect_settings else None,
+        overlay=overlay,
+    )
     print("Sent.")

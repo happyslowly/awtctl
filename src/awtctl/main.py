@@ -1,6 +1,6 @@
 import click
 
-from awtctl.client import AwtrixClient
+from awtctl.sdk import AwtrixSDK
 from awtctl.commands.app import create, next, prev, switch
 from awtctl.commands.config import config
 from awtctl.commands.device import power, reboot, sleep, update
@@ -18,7 +18,7 @@ def cli(ctx: click.Context, host: str | None) -> None:
             "Host is required. Use --host or set the AWTRIX_HOST environment variable."
         )
     ctx.ensure_object(dict)
-    ctx.obj["client"] = AwtrixClient(host)
+    ctx.obj["sdk"] = AwtrixSDK(host)
 
 
 cli.add_command(stats)

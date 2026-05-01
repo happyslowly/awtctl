@@ -14,5 +14,4 @@ def _render_screen(pixels: list[int], width: int = 32) -> None:
 @click.command(help="Render current matrix screen in terminal.")
 @click.pass_context
 def screen(ctx: click.Context) -> None:
-    pixels = ctx.obj["client"].get("screen")
-    _render_screen(pixels)
+    _render_screen(ctx.obj["sdk"].get_screen())
