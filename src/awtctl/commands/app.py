@@ -21,6 +21,14 @@ def create(ctx: click.Context, name: str, file: Path) -> None:
     print("Done.")
 
 
+@click.command(help="Delete a custom app by name.")
+@click.argument("name")
+@click.pass_context
+def delete(ctx: click.Context, name: str) -> None:
+    ctx.obj["sdk"].delete_app(name)
+    print("Done.")
+
+
 @click.command(help="Switch to a specific app by name.")
 @click.argument("name")
 @click.pass_context

@@ -1,7 +1,7 @@
 import click
 
 from awtctl.sdk import AwtrixSDK
-from awtctl.commands.app import create, next, prev, switch
+from awtctl.commands.app import create, delete, next, prev, switch
 from awtctl.commands.config import config
 from awtctl.commands.device import power, reboot, sleep, update
 from awtctl.commands.notify import dismiss, send
@@ -30,6 +30,7 @@ cli.add_command(sleep)
 cli.add_command(update)
 cli.add_command(reboot)
 cli.add_command(create)
+cli.add_command(delete)
 cli.add_command(switch)
 cli.add_command(next)
 cli.add_command(prev)
