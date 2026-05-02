@@ -3,9 +3,13 @@ import os
 import signal
 import sys
 import threading
+from pathlib import Path
+
 import httpx
 
 from awtctl import AwtrixSDK
+
+_LOG = Path.home() / ".awtctl" / "weather.log"
 
 _WMO: dict[int, str] = {
     0: "Clear",
@@ -55,12 +59,15 @@ def _fetch(lat: float, lon: float, unit: str) -> tuple[float, str]:
 def _daemonize() -> None:
     pid = os.fork()
     if pid > 0:
-        print(f"Weather daemon started (PID {pid})")
+        print(f"Weather daemon started (PID {pid}), log: {_LOG}")
         os._exit(0)
     os.setsid()
-    for fd, mode in [(0, "r"), (1, "w"), (2, "w")]:
-        with open(os.devnull, mode) as f:
-            os.dup2(f.fileno(), fd)
+    _LOG.parent.mkdir(parents=True, exist_ok=True)
+    with open(os.devnull, "r") as f:
+        os.dup2(f.fileno(), 0)
+    with open(_LOG, "a") as f:
+        os.dup2(f.fileno(), 1)
+        os.dup2(f.fileno(), 2)
 
 
 def main(host: str | None = None, args: list[str] | None = None) -> None:
@@ -96,17 +103,20 @@ def main(host: str | None = None, args: list[str] | None = None) -> None:
     try:
         first = True
         while not stop.is_set():
-            temp, desc = _fetch(lat, lon, parsed.unit)
-            sdk.create_app(
-                "weather",
-                text=f"{desc} {temp:.0f}°{parsed.unit}",
-                color="#FF8000",
-                duration=10,
-                scroll_speed=50,
-            )
-            if first:
-                sdk.switch_app("weather")
-                first = False
+            try:
+                temp, desc = _fetch(lat, lon, parsed.unit)
+                sdk.create_app(
+                    "weather",
+                    text=f"{desc} {temp:.0f}°{parsed.unit}",
+                    color="#FF8000",
+                    duration=10,
+                    scroll_speed=50,
+                )
+                if first:
+                    sdk.switch_app("weather")
+                    first = False
+            except Exception as e:
+                print(f"Error: {e}", file=sys.stderr, flush=True)
             stop.wait(300)
     finally:
         sdk.delete_app("weather")

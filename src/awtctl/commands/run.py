@@ -23,4 +23,4 @@ def run_cmd(ctx: click.Context, app: str, app_args: tuple[str, ...]) -> None:
         available = ", ".join(sorted(_APPS))
         raise click.UsageError(f"Unknown app '{app}'. Available: {available}")
     mod = importlib.import_module(_APPS[app])
-    mod.main(host=ctx.obj["host"], args=list(app_args) if app_args else None)
+    mod.main(host=ctx.obj["host"], args=list(app_args))
