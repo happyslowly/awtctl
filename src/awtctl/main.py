@@ -5,6 +5,7 @@ from awtctl.commands.app import create, next, prev, switch
 from awtctl.commands.config import config
 from awtctl.commands.device import power, reboot, sleep, update
 from awtctl.commands.notify import dismiss, send
+from awtctl.commands.run import run_cmd
 from awtctl.commands.screen import screen
 from awtctl.commands.stats import stats
 
@@ -18,6 +19,7 @@ def cli(ctx: click.Context, host: str | None) -> None:
             "Host is required. Use --host or set the AWTRIX_HOST environment variable."
         )
     ctx.ensure_object(dict)
+    ctx.obj["host"] = host
     ctx.obj["sdk"] = AwtrixSDK(host)
 
 
@@ -34,6 +36,7 @@ cli.add_command(prev)
 cli.add_command(send)
 cli.add_command(dismiss)
 cli.add_command(config)
+cli.add_command(run_cmd)
 
 
 if __name__ == "__main__":

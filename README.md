@@ -4,7 +4,23 @@ CLI and Python SDK for controlling [AWTRIX 3](https://blueforcer.github.io/awtri
 
 ## Installation
 
+### pipx (recommended for CLI use)
+
 ```bash
+pipx install git+https://github.com/happyslowly/awtctl.git
+```
+
+### pip
+
+```bash
+pip install git+https://github.com/happyslowly/awtctl.git
+```
+
+### From source
+
+```bash
+git clone https://github.com/happyslowly/awtctl.git
+cd awtctl
 uv sync
 ```
 
@@ -84,6 +100,21 @@ awtctl config set BRI=128 TCOL="#FF8000"
 awtctl config reset
 ```
 
+### Built-in Apps
+
+Run ready-to-use apps directly from the CLI:
+
+```bash
+awtctl run cpu
+awtctl run weather
+awtctl run pomodoro 25
+awtctl run pomodoro --help
+awtctl run fitness --rounds 8 --work 30 --rest 10 --prepare 10
+awtctl run fitness --help
+```
+
+`weather` uses `WEATHER_LOCATION` (default `London`) and `WEATHER_UNIT` (`C`/`F`) env vars.
+
 ## SDK Usage
 
 ```python
@@ -97,34 +128,4 @@ sdk.switch_app("Time")
 sdk.set_power(True)
 sdk.update_settings(bri=128, tcol="#FF8000")
 stats = sdk.get_stats()
-```
-
-## Built-in Apps
-
-Ready-to-run apps in `src/awtctl/apps/`:
-
-### CPU Monitor
-
-Displays local CPU usage with a progress bar, updated every 6 seconds.
-
-```bash
-uv run python src/awtctl/apps/cpu.py
-```
-
-### Weather
-
-Displays current weather from [wttr.in](https://wttr.in), updated every 5 minutes.
-
-```bash
-WEATHER_LOCATION="New York" uv run python src/awtctl/apps/weather.py
-WEATHER_LOCATION="Tokyo" WEATHER_UNIT="F" uv run python src/awtctl/apps/weather.py
-```
-
-### Pomodoro Timer
-
-Countdown timer that locks the display for the duration. Sends a notification when done.
-
-```bash
-uv run python src/awtctl/apps/pomodoro.py        # 25 minutes
-uv run python src/awtctl/apps/pomodoro.py 5      # 5 minutes
 ```

@@ -19,8 +19,8 @@ def fetch_weather() -> tuple[float, str]:
     return temp, desc
 
 
-def main() -> None:
-    sdk = AwtrixSDK(os.environ["AWTRIX_HOST"])
+def main(host: str | None = None, args: list[str] | None = None) -> None:
+    sdk = AwtrixSDK(host or os.environ["AWTRIX_HOST"])
     try:
         while True:
             temp, desc = fetch_weather()

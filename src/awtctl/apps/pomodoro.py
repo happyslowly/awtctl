@@ -5,7 +5,7 @@ import time
 from awtctl import AwtrixSDK
 
 
-def main() -> None:
+def main(host: str | None = None, args: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Pomodoro timer on AWTRIX.")
     parser.add_argument(
         "minutes",
@@ -14,10 +14,10 @@ def main() -> None:
         default=25,
         help="Duration in minutes (default 25).",
     )
-    args = parser.parse_args()
+    parsed = parser.parse_args(args)
 
-    total = args.minutes * 60
-    sdk = AwtrixSDK(os.environ["AWTRIX_HOST"])
+    total = parsed.minutes * 60
+    sdk = AwtrixSDK(host or os.environ["AWTRIX_HOST"])
 
     sdk.update_settings(blockn=True, atrans=False)
     try:

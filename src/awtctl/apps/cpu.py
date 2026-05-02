@@ -6,8 +6,8 @@ import psutil
 from awtctl import AwtrixSDK
 
 
-def main() -> None:
-    sdk = AwtrixSDK(os.environ["AWTRIX_HOST"])
+def main(host: str | None = None, args: list[str] | None = None) -> None:
+    sdk = AwtrixSDK(host or os.environ["AWTRIX_HOST"])
     try:
         while True:
             cpu = psutil.cpu_percent(interval=1)

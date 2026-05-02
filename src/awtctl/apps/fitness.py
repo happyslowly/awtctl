@@ -20,7 +20,7 @@ def countdown(sdk: AwtrixSDK, label: str, color: str, seconds: int) -> None:
         time.sleep(1)
 
 
-def main() -> None:
+def main(host: str | None = None, args: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="HIIT interval timer on AWTRIX.")
     parser.add_argument(
         "--rounds", type=int, default=8, help="Number of rounds (default 8)."
@@ -37,27 +37,27 @@ def main() -> None:
         default=0,
         help="Initial get-ready countdown in seconds (default off).",
     )
-    args = parser.parse_args()
+    parsed = parser.parse_args(args)
 
-    sdk = AwtrixSDK(os.environ["AWTRIX_HOST"])
+    sdk = AwtrixSDK(host or os.environ["AWTRIX_HOST"])
     sdk.update_settings(blockn=True, atrans=False)
 
     try:
-        if args.prepare:
-            countdown(sdk, "READY", "#FF8000", args.prepare)
+        if parsed.prepare:
+            countdown(sdk, "READY", "#FF8000", parsed.prepare)
 
-        for round_num in range(1, args.rounds + 1):
+        for round_num in range(1, parsed.rounds + 1):
             sdk.create_app(
                 "fitness",
-                text=f"R{round_num}/{args.rounds}",
+                text=f"R{round_num}/{parsed.rounds}",
                 color="#FF8000",
                 duration=3,
             )
             sdk.switch_app("fitness")
             time.sleep(3)
-            countdown(sdk, "WORK", "#FF0000", args.work)
-            if round_num < args.rounds:
-                countdown(sdk, "REST", "#00FF00", args.rest)
+            countdown(sdk, "WORK", "#FF0000", parsed.work)
+            if round_num < parsed.rounds:
+                countdown(sdk, "REST", "#00FF00", parsed.rest)
 
         sdk.notify("Workout done!", color="#00FF00", duration=15, wakeup=True)
     finally:
