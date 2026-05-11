@@ -4,9 +4,10 @@ import click
 
 _APPS: dict[str, str] = {
     "cpu": "awtctl.apps.cpu",
-    "weather": "awtctl.apps.weather",
-    "pomodoro": "awtctl.apps.pomodoro",
     "fitness": "awtctl.apps.fitness",
+    "habit": "awtctl.apps.habit",
+    "pomodoro": "awtctl.apps.pomodoro",
+    "weather": "awtctl.apps.weather",
 }
 
 
