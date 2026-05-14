@@ -78,8 +78,12 @@ def _push(sdk: AwtrixSDK, data: dict) -> None:
             draw.append({"dp": [_GRID_X + col, _GRID_Y + row, _DONE]})
 
     today = date.today()
-    draw.append({"df": [1, 7, 30, 1, _MISS]})
-    for i in range(30):
+    habit_start = date.fromisoformat(data["start"])
+    strip_days = min((today - habit_start).days + 1, 30)
+    draw.append({"df": [1, 7, 30, 1, "#000000"]})
+    if strip_days > 0:
+        draw.append({"df": [1, 7, strip_days, 1, _MISS]})
+    for i in range(strip_days):
         if (today - timedelta(days=i)).isoformat() in done:
             draw.append({"dp": [1 + i, 7, _DONE]})
 
