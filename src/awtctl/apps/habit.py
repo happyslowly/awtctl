@@ -43,6 +43,8 @@ def _streaks(done: set[str], start: date, days: int) -> tuple[int, int]:
 
     current = 0
     d = min(today, start + timedelta(days=days - 1))
+    if d == today and today.isoformat() not in done:
+        d -= timedelta(days=1)
     while d >= start:
         if d.isoformat() in done:
             current += 1
